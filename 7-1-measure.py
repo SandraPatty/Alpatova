@@ -25,7 +25,7 @@ def adc():
     for i in range(8):
         _value[i] = 1
         GPIO.output(dac, _value)
-        sleep(0.0007)
+        time.sleep(0.0007)
         _comp_value = GPIO.input(comp)
         if _comp_value == 0:
             _value[i] = 0
@@ -37,8 +37,8 @@ try:
     uRC = 0
     U = 3.3
     UD = int(U / (3.3 / 256))
-    GPIO.output(troyka, dec2bin(UD))
-    while uRC < (0.97 * U):
+    GPIO.output(troyka, 1)
+    while uRC < (0.80 * U):
         value = adc()
         leds_value = 2 ** ceil(value / 32) - 1
         GPIO.output(leds, dec2bin(leds_value))
@@ -47,7 +47,7 @@ try:
         print(value, '{:.2f}'.format(uRC), 'V', leds_value)
     U = 0
     UD = int(U / (3.3 / 256))
-    GPIO.output(troyka, dec2bin(UD))
+    GPIO.output(troyka, 0)
     while uRC > (0.2 * 3.3):
         value = adc()
         leds_value = 2 ** ceil(value / 32) - 1
