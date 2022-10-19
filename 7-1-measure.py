@@ -51,7 +51,7 @@ try:
         value = adc()
         lights_out(value)
         uRC = 3.3 / 256 * value
-        array.append(uRC)
+        array.append(value)
         print(value, '{:.2f}'.format(uRC), 'V')
 
     #измерения во время разряда конденсатора
@@ -59,11 +59,11 @@ try:
     U = 0
     UD = int(U / (3.3 / 256))
     GPIO.output(troyka, 0)
-    while uRC > (0.2 * 3.3):
+    while uRC > (0.02 * 3.3):
         value = adc()
         lights_out(value)
         uRC = 3.3 / 256 * value
-        array.append(uRC)
+        array.append(value)
         print(value, '{:.2f}'.format(uRC), 'V')
 
     #конец эксперимента, начало вычислений
@@ -72,8 +72,10 @@ try:
     print('Конец эксперимента, начало вычислений')
     duration = t2 - t1
     av_freq = len(array) / duration
+    av_freq = '{:.3f}'.format(av_freq)
     T = duration / len(array)
-    quant_step = 256
+    quant_step = 3.3 / 256
+    quant_step = '{:.3f}'.format(quant_step)
     settings = []
     settings.append(av_freq)
     settings.append(quant_step)
@@ -87,9 +89,9 @@ try:
     pyplot.show()
 
     #сохранение данных в файлы
-    with open('data.txt', w) as data1:
+    with open('data.txt', 'w') as data1:
         data1.write('\n'.join(str(item) for item in array))
-    with open('settings.txt', w) as data2:
+    with open('settings.txt', 'w') as data2:
         data2.write('\n'.join(str(item) for item in settings))
 
     print(duration, T, av_freq, quant_step)
@@ -98,3 +100,4 @@ try:
 finally:
     GPIO.output(dac, 0)
     GPIO.cleanup()
+
